@@ -1,0 +1,21 @@
+name: FancyPortals
+main: com.sniperzciinema.fancyportals.FancyPortals
+author: SniperzCiinema
+version: 0.0.1
+description: Portalllssssss!
+website: SniperzCiinema.com
+commands:
+  fancyportals:
+    description: FancyPortals default command
+    usage: /<command>
+    aliases: [portals, fp, portals, fancyportals]
+    
+permissions:  
+  FancyPortals.*:
+    default: true
+    children:
+      FancyPortals.Create: true
+      FancyPortals.Use: true
+      
+  FancyPortals.Use:
+    default: true
