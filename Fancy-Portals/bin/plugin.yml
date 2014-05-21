@@ -1,14 +1,14 @@
 name: FancyPortals
 main: com.sniperzciinema.fancyportals.FancyPortals
 author: SniperzCiinema
-version: 0.0.1
+version: 0.0.4
 description: Portalllssssss!
 website: SniperzCiinema.com
 commands:
-  fancyportals:
+  FancyPortals:
     description: FancyPortals default command
     usage: /<command>
-    aliases: [portals, fp, portals, fancyportals]
+    aliases: [fp, portal, portals, fportal, fportals, fancyp, fancyportal]
     
 permissions:  
   FancyPortals.*:

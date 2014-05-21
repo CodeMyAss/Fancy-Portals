@@ -13,22 +13,22 @@ import org.bukkit.plugin.Plugin;
 
 
 public class FileManager {
-
-	Plugin						plugin;
+	
+	Plugin										plugin;
 	private YamlConfiguration	portals;
-	private File				portalsFile;
-
+	private File							portalsFile;
+	
 	public FileManager(Plugin plugin)
 	{
 		this.plugin = plugin;
 	}
-
+	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	public FileConfiguration getConfig() {
 		return this.plugin.getConfig();
 	}
-
+	
 	public FileConfiguration getPortals() {
 		if (this.portals == null)
 		{
@@ -37,18 +37,18 @@ public class FileManager {
 		}
 		return this.portals;
 	}
-
+	
 	public void reloadConfig() {
 		this.plugin.reloadConfig();
 	}
-
+	
 	public void reloadPortals() {
 		if (this.portalsFile == null)
 			this.portalsFile = new File(this.plugin.getDataFolder(), "Portals.yml");
-
+		
 		this.portals = YamlConfiguration.loadConfiguration(this.portalsFile);
 		InputStream defConfigStream = this.plugin.getResource("Portals.yml");
-
+		
 		if (defConfigStream != null)
 		{
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
@@ -56,11 +56,11 @@ public class FileManager {
 				this.portals.setDefaults(defConfig);
 		}
 	}
-
+	
 	public void saveConfig() {
 		this.plugin.saveConfig();
 	}
-
+	
 	public void savePortals() {
 		if ((this.portals == null) || (this.portalsFile == null))
 			return;
@@ -73,5 +73,5 @@ public class FileManager {
 			Bukkit.getLogger().log(Level.SEVERE, "Could not save config " + this.portalsFile, ex);
 		}
 	}
-
+	
 }

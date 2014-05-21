@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class FancyMessage {
-
+	
 	public static ItemStack getFancyMessageItem(String title, String... strings) {
 		ItemStack item = new ItemStack(Material.STONE);
 		ItemMeta im = item.getItemMeta();
@@ -29,22 +29,22 @@ public class FancyMessage {
 		item.setItemMeta(im);
 		return item;
 	}
-
+	
 	private final List<MessagePart>	messageParts;
-	private String					jsonString;
-
-	private boolean					dirty;
-	private Class<?>				nmsChatSerializer		= Reflection.getNMSClass("ChatSerializer");
-	private Class<?>				nmsTagCompound			= Reflection.getNMSClass("NBTTagCompound");
-	private Class<?>				nmsPacketPlayOutChat	= Reflection.getNMSClass("PacketPlayOutChat");
-	private Class<?>				nmsAchievement			= Reflection.getNMSClass("Achievement");
-	private Class<?>				nmsStatistic			= Reflection.getNMSClass("Statistic");
-
-	private Class<?>				nmsItemStack			= Reflection.getNMSClass("ItemStack");
-	private Class<?>				obcStatistic			= Reflection.getOBCClass("CraftStatistic");
-
-	private Class<?>				obcItemStack			= Reflection.getOBCClass("inventory.CraftItemStack");
-
+	private String									jsonString;
+	
+	private boolean									dirty;
+	private Class<?>								nmsChatSerializer			= Reflection.getNMSClass("ChatSerializer");
+	private Class<?>								nmsTagCompound				= Reflection.getNMSClass("NBTTagCompound");
+	private Class<?>								nmsPacketPlayOutChat	= Reflection.getNMSClass("PacketPlayOutChat");
+	private Class<?>								nmsAchievement				= Reflection.getNMSClass("Achievement");
+	private Class<?>								nmsStatistic					= Reflection.getNMSClass("Statistic");
+	
+	private Class<?>								nmsItemStack					= Reflection.getNMSClass("ItemStack");
+	private Class<?>								obcStatistic					= Reflection.getOBCClass("CraftStatistic");
+	
+	private Class<?>								obcItemStack					= Reflection.getOBCClass("inventory.CraftItemStack");
+	
 	public FancyMessage(final String firstPartText)
 	{
 		this.messageParts = new ArrayList<MessagePart>();
@@ -52,7 +52,7 @@ public class FancyMessage {
 		this.jsonString = null;
 		this.dirty = false;
 	}
-
+	
 	public FancyMessage achievementTooltip(final Achievement which) {
 		try
 		{
@@ -65,12 +65,12 @@ public class FancyMessage {
 			return this;
 		}
 	}
-
+	
 	public FancyMessage achievementTooltip(final String name) {
 		onHover("show_achievement", "achievement." + name);
 		return this;
 	}
-
+	
 	public FancyMessage color(final ChatColor color) {
 		if (!color.isColor())
 			throw new IllegalArgumentException(color.name() + " is not a color");
@@ -78,17 +78,17 @@ public class FancyMessage {
 		this.dirty = true;
 		return this;
 	}
-
+	
 	public FancyMessage command(final String command) {
 		onClick("run_command", command);
 		return this;
 	}
-
+	
 	public FancyMessage file(final String path) {
 		onClick("open_file", path);
 		return this;
 	}
-
+	
 	public FancyMessage itemTooltip(final ItemStack itemStack) {
 		try
 		{
@@ -101,21 +101,21 @@ public class FancyMessage {
 			return this;
 		}
 	}
-
+	
 	public FancyMessage itemTooltip(final String itemJSON) {
 		onHover("show_item", itemJSON);
 		return this;
 	}
-
+	
 	private MessagePart latest() {
 		return this.messageParts.get(this.messageParts.size() - 1);
 	}
-
+	
 	public FancyMessage link(final String url) {
 		onClick("open_url", url);
 		return this;
 	}
-
+	
 	private String makeMultilineTooltip(final String[] lines) {
 		StringWriter string = new StringWriter();
 		JsonWriter json = new JsonWriter(string);
@@ -139,26 +139,26 @@ public class FancyMessage {
 		}
 		return string.toString();
 	}
-
+	
 	private void onClick(final String name, final String data) {
 		final MessagePart latest = latest();
 		latest.clickActionName = name;
 		latest.clickActionData = data;
 		this.dirty = true;
 	}
-
+	
 	private void onHover(final String name, final String data) {
 		final MessagePart latest = latest();
 		latest.hoverActionName = name;
 		latest.hoverActionData = data;
 		this.dirty = true;
 	}
-
+	
 	public void send(final Iterable<Player> players) {
 		for (final Player player : players)
 			send(player);
 	}
-
+	
 	public void send(Player player) {
 		try
 		{
@@ -173,7 +173,7 @@ public class FancyMessage {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public FancyMessage statisticTooltip(final Statistic which) {
 		Type type = which.getType();
 		if (type != Type.UNTYPED)
@@ -190,7 +190,7 @@ public class FancyMessage {
 			return this;
 		}
 	}
-
+	
 	public FancyMessage statisticTooltip(final Statistic which, EntityType entity) {
 		Type type = which.getType();
 		if (type == Type.UNTYPED)
@@ -209,7 +209,7 @@ public class FancyMessage {
 			return this;
 		}
 	}
-
+	
 	public FancyMessage statisticTooltip(final Statistic which, Material item) {
 		Type type = which.getType();
 		if (type == Type.UNTYPED)
@@ -228,7 +228,7 @@ public class FancyMessage {
 			return this;
 		}
 	}
-
+	
 	public FancyMessage style(final ChatColor... styles) {
 		for (final ChatColor style : styles)
 			if (!style.isFormat())
@@ -237,18 +237,18 @@ public class FancyMessage {
 		this.dirty = true;
 		return this;
 	}
-
+	
 	public FancyMessage suggest(final String command) {
 		onClick("suggest_command", command);
 		return this;
 	}
-
+	
 	public FancyMessage then(final Object obj) {
 		this.messageParts.add(new MessagePart(obj.toString()));
 		this.dirty = true;
 		return this;
 	}
-
+	
 	public String toJSONString() {
 		if (!this.dirty && (this.jsonString != null))
 			return this.jsonString;
@@ -275,15 +275,15 @@ public class FancyMessage {
 		this.dirty = false;
 		return this.jsonString;
 	}
-
+	
 	public FancyMessage tooltip(final List<String> lines) {
 		return tooltip((String[]) lines.toArray());
 	}
-
+	
 	public FancyMessage tooltip(final String text) {
 		return tooltip(text.split("\\n"));
 	}
-
+	
 	public FancyMessage tooltip(final String... lines) {
 		if (lines.length == 1)
 			onHover("show_text", lines[0]);

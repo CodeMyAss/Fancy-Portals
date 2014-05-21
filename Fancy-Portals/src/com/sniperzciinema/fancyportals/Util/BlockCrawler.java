@@ -9,20 +9,20 @@ import org.bukkit.block.Block;
 
 
 public class BlockCrawler {
-
-	public static final int[][]	ADJ_LOC				= new int[][] { new int[] { -1, 0, 0 }, new int[] { 1, 0, 0 }, new int[] { 0, -1, 0 }, new int[] { 0, 1, 0 }, new int[] { 0, 0, -1 }, new int[] { 0, 0, 1 } };
-
-	public static final int		DEFAULT_MAX_SIZE	= 1000;
-
-	int							mMaxPortalSize;
-	Block						mOrigBlock;
-	ArrayList<String>			mProcessedBlocks;
-
+	
+	public static final int[][]	ADJ_LOC						= new int[][] { new int[] { -1, 0, 0 }, new int[] { 1, 0, 0 }, new int[] { 0, -1, 0 }, new int[] { 0, 1, 0 }, new int[] { 0, 0, -1 }, new int[] { 0, 0, 1 } };
+	
+	public static final int			DEFAULT_MAX_SIZE	= 1000;
+	
+	int													mMaxPortalSize;
+	Block												mOrigBlock;
+	ArrayList<String>						mProcessedBlocks;
+	
 	public BlockCrawler(int maxPortalSize)
 	{
 		this.mMaxPortalSize = maxPortalSize;
 	}
-
+	
 	private void processAdjacent(Block block, Material type) {
 		if ((block != null) && (block.getType() == type))
 			if (!this.mProcessedBlocks.contains(new Coords(block.getLocation()).asStringIgnoreYawAndPitch()))
@@ -39,11 +39,11 @@ public class BlockCrawler {
 				}
 			}
 	}
-
+	
 	public void start(Block origBlock, ArrayList<String> blockCoordsArr) {
 		this.mOrigBlock = origBlock;
 		this.mProcessedBlocks = blockCoordsArr;
 		processAdjacent(this.mOrigBlock, this.mOrigBlock.getType());
 	}
-
+	
 }

@@ -24,13 +24,13 @@ import com.sniperzciinema.fancyportals.Util.Coords;
 
 
 public class Listeners implements Listener {
-
-	private Plugin					plugin;
-	private PortalHandler			portalHandler;
-
+	
+	private Plugin								plugin;
+	private PortalHandler					portalHandler;
+	
 	private HashMap<String, Long>	cooldowns;
-	private int						seconds;
-
+	private int										seconds;
+	
 	public Listeners(Plugin plugin, PortalHandler portalHandler)
 	{
 		this.plugin = plugin;
@@ -38,24 +38,24 @@ public class Listeners implements Listener {
 		this.cooldowns = new HashMap<String, Long>();
 		this.seconds = 1;
 	}
-
+	
 	public void activateCooldown(Player player) {
 		this.cooldowns.put(player.getName(), System.currentTimeMillis());
 	}
-
+	
 	public boolean isCooledDown(Player player) {
 		if (!this.cooldowns.containsKey(player.getName()) || (((System.currentTimeMillis() - this.cooldowns.get(player.getName())) / 1000) >= this.seconds))
 			return true;
 		else
 			return false;
 	}
-
+	
 	@EventHandler
 	public void onBlockPhysicsEvent(BlockPhysicsEvent e) {
 		if (e.getBlock().getType() == Material.PORTAL)
 			e.setCancelled(true);
 	}
-
+	
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
 		boolean isSameBlock = (e.getFrom().getBlockX() == e.getTo().getBlockX()) && (e.getFrom().getBlockY() == e.getTo().getBlockY()) && (e.getFrom().getBlockZ() == e.getTo().getBlockZ());
@@ -66,15 +66,15 @@ public class Listeners implements Listener {
 				if (this.portalHandler.getPortal(e.getTo()) != null)
 					if (player.hasPermission("Portals.Use"))
 					{
-
+						
 						if (isCooledDown(player))
 						{
 							activateCooldown(player);
-
+							
 							Portal portal = this.portalHandler.getPortal(e.getTo());
 							FancyPortalEnter fpEnter = new FancyPortalEnter(portal, player);
 							Bukkit.getPluginManager().callEvent(fpEnter);
-
+							
 							if (!fpEnter.isCancelled())
 								if (portal.getType() == PortalType.BUNGEE)
 								{
@@ -83,38 +83,35 @@ public class Listeners implements Listener {
 									out.writeUTF(portal.getBungeeTarget());
 									player.sendPluginMessage(this.plugin, "BungeeCord", out.toByteArray());
 								}
-								else
-									if (portal.getType() == PortalType.LOCATION)
-									{
-										Location target = player.getWorld().getSpawnLocation();
-
-										target = new Coords(portal.getLocationTarget()).asLocation();
-
-										player.teleport(target);
-									}
-									else
-										if (portal.getType() == PortalType.SERVER_COMMAND)
-										{
-											String command = portal.getCommand();
-
-											Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("<player>", player.getName()));
-
-										}
-										else
-											if (portal.getType() == PortalType.PLAYER_COMMAND)
-											{
-												String command = portal.getCommand();
-
-												player.performCommand(command);
-
-											}
-
+								else if (portal.getType() == PortalType.LOCATION)
+								{
+									Location target = player.getWorld().getSpawnLocation();
+									
+									target = new Coords(portal.getLocationTarget()).asLocation();
+									
+									player.teleport(target);
+								}
+								else if (portal.getType() == PortalType.SERVER_COMMAND)
+								{
+									String command = portal.getCommand();
+									
+									Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("<player>", player.getName()));
+									
+								}
+								else if (portal.getType() == PortalType.PLAYER_COMMAND)
+								{
+									String command = portal.getCommand();
+									
+									player.performCommand(command);
+									
+								}
+							
 						}
-
+						
 					}
 					else
 						player.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "Invalid Permissions!");
 		}
 	}
-
+	
 }
